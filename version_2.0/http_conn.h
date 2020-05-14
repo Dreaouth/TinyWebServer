@@ -47,13 +47,13 @@ public:
         CHECK_STATE_CONTENT
     };
     enum HTTP_CODE{
-        NO_REQUEST,
-        GET_REQUEST,
-        BAD_REQUEST,
-        NO_RESOURCE,
-        FOBBIDDEN_REQUEST,
-        FILE_REQUEST,
-        INTERNAL_ERROR,
+        NO_REQUEST,         //请求不完整，需要继续等待
+        GET_REQUEST,        //获得了完整请求，调用do_request()完成资源映射
+        BAD_REQUEST,        //请求报文有错误
+        NO_RESOURCE,        //请求资源不存在
+        FORBIDDEN_REQUEST,  //请求资源禁止访问
+        FILE_REQUEST,       //请求资源可以访问，调用process_write()完成响应报文
+        INTERNAL_ERROR,     //服务器内部错误
         CLOSED_CONNECTION
     };
     enum LINE_STATUS{
@@ -96,10 +96,11 @@ private:
     LINE_STATUS parse_line();
     void unmap();
     bool add_response(const char *format, ...);
-    bool add_constent(const char *content);
+    bool add_content(const char *content);
     bool add_status_line(int status, const char *title);
     bool add_headers(int content_length);
     bool add_content_type();
+    bool add_content_length(int content_length);
     bool add_linger();
     bool add_blank_line();
 
@@ -132,7 +133,7 @@ private:
     char *doc_root;
 
     map<string, string> m_users;
-    int m_SQLVerufy;
+    int m_SQLVerify;
     int m_TRIGMode;
     int m_close_log;
 

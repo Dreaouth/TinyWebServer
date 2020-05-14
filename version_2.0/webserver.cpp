@@ -7,10 +7,11 @@ WebServer::WebServer(){
     //root文件夹路径
     char server_path[200];
     getcwd(server_path, 200);
-    char root[6] = "/root";
+    char root[6] = "/www";
     m_root = (char *)malloc(strlen(server_path) + strlen(root) + 1);
     strcpy(m_root, server_path);
     strcat(m_root, root);
+    printf("server path is %s\n",m_root);
 
     //定时器
     // users_timer = new client_data[MAX_FD];
@@ -44,7 +45,8 @@ void WebServer::init(int port, string user, string password, string databaseName
 bool WebServer::deal_clientData(){
     struct sockaddr_in client_address;
     socklen_t client_addrlength = sizeof(client_address);
-    if (m_TRIGMode == 0){   // LT触发模式
+    // LT触发模式
+    if (m_TRIGMode == 0){   
         int connfd = accept(m_listenfd, (struct sockaddr *)&client_address, &client_addrlength);
         if (connfd < 0){
             printf("epoll error is %d!\n", errno);
@@ -57,7 +59,8 @@ bool WebServer::deal_clientData(){
         printf("get an client,connfd is %d\n", connfd);
         users[connfd].init(connfd, client_address, m_root, m_users_passwd, m_SQLVerify, m_TRIGMode, m_close_log, m_user, m_passWord, m_databaseName);
     }
-    else{   //ET触发模式
+    //ET触发模式
+    else{   
         while(1){
             int connfd = accept(m_listenfd, (struct sockaddr *)&client_address, &client_addrlength);
             if (connfd < 0){
