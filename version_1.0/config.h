@@ -7,7 +7,7 @@ using namespace std;
 class Config{
 public:
     Config(){
-        PORT = 6666;
+        PORT = 7777;
         SQLVerify = 0;
         LOGWrite = 0;
         TRIGMode = 1;
